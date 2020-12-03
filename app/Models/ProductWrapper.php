@@ -26,7 +26,7 @@ class ProductWrapper
         {
             $result = $this->findInMySQL();   
         }
-        $this->saveInCache($result);
+        $this->saveToCache($result);
         return $result;
     }
 
@@ -60,7 +60,7 @@ class ProductWrapper
     /**
      * save product in the cache
      */
-    private function saveInCache($result)
+    private function saveToCache($result)
     {
         // Database cache or textfile cache
 
