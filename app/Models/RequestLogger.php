@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Request;
+use App\Models\RequestLog;
 
 class RequestLogger
 {
@@ -13,18 +13,18 @@ class RequestLogger
         $this->id = $id;
     }
 
-    private function logRequest()
+    public function logRequest()
     {
         try
         {
-            $request = Request::find($this->id);
+            $request = RequestLog::find($this->id);
             if($request)
             {
                 $request->requests_amount++;
             }
             else 
             { 
-                $request = new Request;
+                $request = new RequestLog;
                 $request->id = $this->id;
             }
             $request->save();

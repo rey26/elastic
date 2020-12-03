@@ -15,4 +15,4 @@ use App\Http\Controllers\ProductController;
 |
 */
 
-Route::get('detail/{id}', 'ProductController@detail');
+Route::get('detail/{id}', 'App\Http\Controllers\ProductController@detail');
