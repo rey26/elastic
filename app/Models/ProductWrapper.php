@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Product;
+
 class ProductWrapper
 {
     private $id;
@@ -18,6 +20,7 @@ class ProductWrapper
         // find in elasticSearch
         if(!$result)
         {
+            $this->saveToCache($result);
             $result = $this->findInElasticSearch();
         }
         
@@ -26,7 +29,6 @@ class ProductWrapper
         {
             $result = $this->findInMySQL();   
         }
-        $this->saveToCache($result);
         return $result;
     }
 
@@ -37,11 +39,12 @@ class ProductWrapper
     {
         if(env('CACHE_TYPE') == 'database')
         {
-            return Product::find($this->id)['data'];
+            $product = Product::find($this->id);
+            return $product->data;
         }
         else if(env('CACHE_TYPE') == 'text_file')
         {
-
+            // get from textfile
         }
         return null;
 
@@ -52,7 +55,8 @@ class ProductWrapper
      */
     private function findInElasticSearch()
     {
-        return IElasticSearchDriver->findById($this->id);
+        $driver = new IElasticSearchDriver;
+        return $driver->findById($this->id);
     }
 
     /**
@@ -60,7 +64,8 @@ class ProductWrapper
      */
     private function findInMySQL()
     {
-        return IMySQLDriver->findProduct($this->id);
+        $driver = new IMySQLDriver;
+        return $driver->findProduct($this->id);
     }
 
     /**
@@ -68,7 +73,17 @@ class ProductWrapper
      */
     private function saveToCache($result)
     {
+        $product = new Product;
+        $product->id = $result->id;
+        $product->data = $result->data;
         // Database cache or textfile cache
-
+        if(env('CACHE_TYPE') == 'database')
+        {
+            $product->save();
+        }
+        else if(env('CACHE_TYPE') == 'text_file')
+        {
+            // save product to textfile
+        }
     }
 }
