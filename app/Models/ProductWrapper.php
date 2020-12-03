@@ -35,9 +35,15 @@ class ProductWrapper
      */
     private function findInCache()
     {
-        return array(
-            'test' => 'test'
-        );
+        if(env('CACHE_TYPE') == 'database')
+        {
+            return Product::find($this->id)['data'];
+        }
+        else if(env('CACHE_TYPE') == 'text_file')
+        {
+
+        }
+        return null;
 
     }
 
@@ -46,7 +52,7 @@ class ProductWrapper
      */
     private function findInElasticSearch()
     {
-
+        return IElasticSearchDriver->findById($this->id);
     }
 
     /**
@@ -54,7 +60,7 @@ class ProductWrapper
      */
     private function findInMySQL()
     {
-
+        return IMySQLDriver->findProduct($this->id);
     }
 
     /**
